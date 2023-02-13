@@ -49,12 +49,15 @@ const Checkout = (props) => {
         return actions.order.capture().then((details) => {
             const name = details.payer.name.given_name;
             alert(`Transaction completed by ${name}`);
+            props.payEvent() ;
         });
     }
 
     return (
         <CheckoutMain>
-            {isPending ? <Loading type='oval' width={40} height={40} fill={'white'} /> : (
+            {isPending ? <LoadingDiv>
+                <Loading type='oval' width={40} height={40} fill={'white'} />
+            </LoadingDiv> : (
                 <>
                     <FormControl fullWidth>
                         <Select
@@ -126,15 +129,9 @@ const PayButtonDiv = tagStyled.div`
     align-items : center;
 `
 const CheckoutMain = tagStyled.div`
-    margin-top : 20px;
+    padding-top : 20px;
     width : 100%;
 
-    display : flex;
-    justify-content : center;
-    align-items : center;
-    
-    flex-direction : column;
-    
     & .MuiOutlinedInput-root {
         svg {
             color : white;
@@ -162,4 +159,11 @@ const CheckoutMain = tagStyled.div`
         padding : 0px !important ;
         color : white ;
     }
+`
+
+const LoadingDiv = tagStyled.div`
+    width : 100%;
+    display  : flex;
+    align-items : center;
+    justify-content : center;
 `

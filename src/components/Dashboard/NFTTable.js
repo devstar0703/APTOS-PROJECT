@@ -11,7 +11,8 @@ import {
     TableFooter,
     TablePagination,
     TableRow,
-    TableCell
+    TableCell,
+    InputAdornment
 } from '@mui/material';
 
 import { 
@@ -23,6 +24,8 @@ import {
 import NFTView from './NFTView';
 
 import { StyledTextField } from './styles/NFTView.styles';
+
+import { SearchOutlined } from '@mui/icons-material';
 
 console.log(aptosList);
 
@@ -60,6 +63,11 @@ const NFTTable = (props) => {
                 placeholder='Enter NFT ID'
                 value={search_id}
                 onChange={(e) => setSearchId(e.target.value)}
+                InputProps={{
+                    startAdornment: <InputAdornment position="start">
+                        <SearchOutlined />
+                    </InputAdornment>,
+                }}
             />
             <NFTTableContainer >
                 <Table>

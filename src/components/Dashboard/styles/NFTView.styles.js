@@ -37,8 +37,16 @@ export const NFTViewMain = tagStyled.div`
     }
 `
 
+export const NFTOwner = tagStyled.p`
+    padding-top : 5px;
+    font-size : 20px;
+    color : rgb(100, 116, 139);
+`
+
 export const NFTImage = tagStyled.img`
-    width : 100%;
+    width : 50%;
+    min-width : 300px;
+
     border-radius : 5px;
 `
 
@@ -73,6 +81,10 @@ export const StyledTextField = styled(TextField)`
     }
 
     & .MuiOutlinedInput-root {
+        svg {
+            color : white;
+        }
+        
         margin-top : 20px;
         background : #1F2025 !important;
         border-radius : 10px;

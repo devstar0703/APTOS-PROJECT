@@ -19,7 +19,10 @@ import {
     NFTTableContainer,
     useStyles
 } from './styles/NFTTable.styles';
+
 import NFTView from './NFTView';
+
+import { StyledTextField } from './styles/NFTView.styles';
 
 console.log(aptosList);
 
@@ -32,6 +35,7 @@ const NFTTable = (props) => {
 
     const classes = useStyles() ;
 
+    const [search_id, setSearchId] = React.useState('');
     const [selectedNFT, setSelectedNFT] = React.useState({});
     const [openNFTView, setOpenNFTView] = React.useState(false);
 
@@ -52,6 +56,11 @@ const NFTTable = (props) => {
 
     return (
         <>
+            <StyledTextField 
+                placeholder='Enter NFT ID'
+                value={search_id}
+                onChange={(e) => setSearchId(e.target.value)}
+            />
             <NFTTableContainer >
                 <Table>
                     <TableHead>
@@ -67,7 +76,11 @@ const NFTTable = (props) => {
                     </TableHead>
                     <TableBody>
                         {
-                            aptosList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((nft, index) => (
+                            aptosList.filter(nft =>
+                                nft.name.search(search_id) >= 0
+                            ).slice(
+                                page * rowsPerPage, page * rowsPerPage + rowsPerPage
+                            ).map((nft, index) => (
                                 <TableRow key={index}
                                     onClick={() => {
                                         handleOpenNFTView();
@@ -95,7 +108,7 @@ const NFTTable = (props) => {
                     <TableFooter>
                         <TableRow>
                             <TablePagination
-                                rowsPerPageOptions={[5, 10]}
+                                rowsPerPageOptions={[5, 10, 15]}
                                 labelRowsPerPage={"NFTs per page"}
                                 count={10000}
                                 SelectProps={{

@@ -73,11 +73,13 @@ const Checkout = (props) => {
                             </MenuItem>
                         </Select>
                     </FormControl>
-                    <PayPalButtons 
-                        style={{ layout: "vertical" }}
-                        createOrder={(data, actions) => onCreateOrder(data, actions)}
-                        onApprove={(data, actions) => onApproveOrder(data, actions)}
-                    />
+                    <PayButtonDiv>
+                        <PayPalButtons 
+                            style={{ layout: "horizontal" }}
+                            createOrder={(data, actions) => onCreateOrder(data, actions)}
+                            onApprove={(data, actions) => onApproveOrder(data, actions)}
+                        />
+                    </PayButtonDiv>
                 </>
             )}
         </CheckoutMain>
@@ -115,12 +117,23 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
+const PayButtonDiv = tagStyled.div`
+    padding-top : 20px;
+    width : 100%;
+
+    display : flex;
+    justify-content : center;
+    align-items : center;
+`
 const CheckoutMain = tagStyled.div`
     margin-top : 20px;
     width : 100%;
 
     display : flex;
     justify-content : center;
+    align-items : center;
+    
+    flex-direction : column;
     
     & .MuiOutlinedInput-root {
         svg {

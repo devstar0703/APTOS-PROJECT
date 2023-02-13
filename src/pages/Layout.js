@@ -23,7 +23,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 const Layout = (props) => {
 
     const initialOptions = {
-        "client-id": process.env.REACT_APP_PAYPAL_,
+        "client-id": 'AQBmw8VsfOx9kJKbHs105jiA3sbqGt_5Z7qgOi645oLyE-KZRlBhXgl2toegnSSgqAQs5_Ibk7oJGySK',
         currency: "USD",
         intent: "capture",
     };

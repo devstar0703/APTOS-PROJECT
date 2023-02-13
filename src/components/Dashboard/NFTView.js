@@ -13,6 +13,7 @@ import {
     StyledTextField,
     StyledButton
 } from './styles/NFTView.styles';
+import Checkout from 'src/shared/components/Checkout';
 
 const NFTView = (props) => {
     const {
@@ -46,6 +47,7 @@ const NFTView = (props) => {
                     value={buyer_address}
                     onChange={(e) => setBuyerAddress(e.target.value)}
                 />
+                <Checkout />
                 <StyledButton fullWidth
                     disabled={!isConnected}
                 >Purchase</StyledButton>

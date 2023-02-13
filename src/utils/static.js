@@ -1,0 +1,1 @@
+export const ipfs_origin = 'https://solsapp.infura-ipfs.io/ipfs';

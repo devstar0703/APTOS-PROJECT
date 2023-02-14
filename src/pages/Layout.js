@@ -11,14 +11,22 @@ import Footer from "src/components/Layouts/Footer";
 import Content from "src/components/Layouts/Content";
 
 import Dashboard from "./Dashboard";
+import Cart from "./Cart";
+import Mint from "./Mint";
 
 import { 
     BackdropOverlay,
     LayoutMain
-} from "./styles/Layout.styles";
+} from "./styled/Layout.styled";
 
 import { WalletProvider } from "src/shared/hooks/useWalletData";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+import 'react-circular-progressbar/dist/styles.css';
 
 const Layout = (props) => {
 
@@ -41,6 +49,8 @@ const Layout = (props) => {
                                 <Routes>
                                     <Route path="/" element={< Dashboard />} />
                                     <Route path="/dashboard" element={< Dashboard />} />
+                                    <Route path="/cart" element={< Cart />} />
+                                    <Route path="/mint" element={<Mint />} />
                                 </Routes>
                             </Content>
                             {/* <Footer /> */}

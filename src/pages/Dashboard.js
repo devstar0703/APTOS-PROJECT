@@ -1,21 +1,17 @@
 import * as React from 'react';
 
-
-import { useTheme } from '@mui/styles';
-
-
 import { 
     DashboardMain, 
-} from './styles/Dashboard.styles';
+} from './styled/Dashboard.styled';
 
 import NFTTable from 'src/components/Dashboard/NFTTable';
+import NFTSlide from 'src/components/Dashboard/NFTSlide';
 
 const Dashboard = (props) => {
-  
-    const theme = useTheme() ;
 
     return (
         <DashboardMain>
+            <NFTSlide />
             <NFTTable />            
         </DashboardMain>
     )

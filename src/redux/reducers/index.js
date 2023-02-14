@@ -1,7 +1,7 @@
 import  { combineReducers } from 'redux' ;
 
-import walletReducer from './wallet' ;
+import cartReducer from './cart' ;
 
 export default combineReducers({
-    wallet : walletReducer 
+    cart : cartReducer 
 });

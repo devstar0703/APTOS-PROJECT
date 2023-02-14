@@ -1,5 +1,7 @@
 const ActionTypes = {
-    ConnectWallet : "ConnectWallet"
+    GetAllNftList : "GetAllNftList",
+    GetCartList : "GetCartList",
+    GetAllCartList : "GetAllCartList"
 }
 
 export default ActionTypes ;

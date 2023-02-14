@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { ipfs_origin } from 'src/utils/static';
+import {  useSelector } from 'react-redux';
 
-import aptosList from 'src/shared/data/aptos_list.json';
+import Loading from 'react-loading-components';
 
 import {
     Table,
@@ -19,28 +19,33 @@ import {
     NFTAsset, 
     NFTTableContainer,
     useStyles
-} from './styles/NFTTable.styles';
+} from './styled/NFTTable.styled';
 
-import NFTView from './NFTView';
+import NFTInfo from './NFTInfo';
 
-import { StyledTextField } from './styles/NFTView.styles';
+import { StyledTextField } from 'src/shared/styled';
 
 import { SearchOutlined } from '@mui/icons-material';
 
-console.log(aptosList);
+import aptos_asset_list from 'src/shared/data/aptos_asset_list.json';
+
+import { ipfs_origin } from 'src/utils/static';
 
 const NFTTable = (props) => {
     const headFields = [
         "",
         "Name",
-        "Description"
+        "Description",
+        "Status"
     ] ;
 
     const classes = useStyles() ;
 
+    const allCartList = useSelector(state => state.cart.allCartList) ;
+
     const [search_id, setSearchId] = React.useState('');
     const [selectedNFT, setSelectedNFT] = React.useState({});
-    const [openNFTView, setOpenNFTView] = React.useState(false);
+    const [openNFTInfo, setOpenNFTInfo] = React.useState(false);
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -54,8 +59,8 @@ const NFTTable = (props) => {
         setPage(0);
     };
 
-    const handleOpenNFTView = () => { setOpenNFTView(true) }
-    const handleCloseNFTView = () => { setOpenNFTView(false) }
+    const handleOpenNFTInfo = () => { setOpenNFTInfo(true) }
+    const handleCloseNFTInfo = () => { setOpenNFTInfo(false) }
 
     return (
         <>
@@ -84,19 +89,12 @@ const NFTTable = (props) => {
                     </TableHead>
                     <TableBody>
                         {
-                            aptosList.filter(nft =>
+                            aptos_asset_list ? aptos_asset_list.filter(nft =>
                                 nft.name.search(search_id) >= 0
                             ).slice(
                                 page * rowsPerPage, page * rowsPerPage + rowsPerPage
                             ).map((nft, index) => (
                                 <TableRow key={index}
-                                    onClick={() => {
-                                        handleOpenNFTView();
-                                        setSelectedNFT({
-                                            ...nft,
-                                            assetUrl : `${ipfs_origin}/${nft.image.replaceAll('ipfs://','')}`
-                                        });
-                                    }}
                                 >
                                     <TableCell
                                         sx={{width : '150px'}}
@@ -109,8 +107,29 @@ const NFTTable = (props) => {
                                     <TableCell>
                                         {nft.description}
                                     </TableCell>
+                                    { 
+                                        allCartList?.findIndex(nft => 
+                                            nft.nft_id === index + page * rowsPerPage
+                                        ) >= 0
+                                        ? <TableCell>
+                                            Pending On Cart...
+                                        </TableCell>
+                                        : <TableCell>
+                                            <button onClick={() => {
+                                                handleOpenNFTInfo();
+                                                setSelectedNFT({
+                                                    ...nft,
+                                                    assetUrl : `${ipfs_origin}/${nft.image.replaceAll('ipfs://','')}`
+                                                });
+                                            }}>View In Detail</button>
+                                        </TableCell>
+                                    }
                                 </TableRow>
-                            ))
+                            )) : <TableRow>
+                                <TableCell colSpan={4} sx={{textAlign : 'center !important'}}>
+                                    <Loading type='oval' width={30} height={30} />
+                                </TableCell>
+                            </TableRow>
                         }
                     </TableBody>
                     <TableFooter>
@@ -132,17 +151,17 @@ const NFTTable = (props) => {
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                             />    
                         </TableRow>
-                    
                     </TableFooter>
                 </Table>
             </NFTTableContainer>
-            <NFTView 
-                open={openNFTView}
-                handleClose={handleCloseNFTView}
+            <NFTInfo 
+                open={openNFTInfo}
+                handleClose={handleCloseNFTInfo}
                 nftInfo={selectedNFT}
             />
         </>
     )
 }
+
 
 export default NFTTable;

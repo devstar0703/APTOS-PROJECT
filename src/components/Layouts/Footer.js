@@ -4,7 +4,7 @@ import { useTheme } from '@mui/styles';
 
 import { 
     FooterMain
-} from './styles/Footer.styles';
+} from './styled/Footer.styled';
 
 const Footer = () => {
     const theme = useTheme() ;

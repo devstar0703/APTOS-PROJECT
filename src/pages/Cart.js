@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
+import useWalletData from 'src/shared/hooks/useWalletData';
 
 import { backend_endpoint, ipfs_origin } from 'src/utils/static';
 
@@ -15,6 +16,7 @@ import {
 
 import NFTView from 'src/components/Cart/NFTView';
 import Loading from 'react-loading-components';
+import swal from 'sweetalert';
 
 import axios from 'axios';
 import { authorization } from 'src/utils/helper/globalHelper';
@@ -24,6 +26,10 @@ import aptos_asset_list from 'src/shared/data/aptos_asset_list.json';
 import { loadAllCartList } from 'src/redux/actions/cart';
 
 const Cart = () => {
+    const {
+        isConnected
+    } = useWalletData() ;
+
     const cartList = useSelector(state => state.cart.cartList) ;
     const dispatch = useDispatch() ;
 
@@ -45,18 +51,38 @@ const Cart = () => {
     }
 
     const cancelCart = async (cart_id) => {
-        console.log(cart_id) ;
-        let res = await axios.delete(`${backend_endpoint}cart`, {
+        await axios.delete(`${backend_endpoint}cart`, {
             ...authorization(),
             data : {
                 cart_id
             }
+        }, {
+            'Access-Control-Allow-Origin' : '*',
         }) ;
-
-        console.log(res.data) ;
 
         loadCartList() ;
         loadAllCartList(dispatch) ;
+    }
+
+    const openViewNFTInfo = (nft, cart_id) => {
+        if(!isConnected) {
+            swal({
+                text : 'You should connect wallet to purchase this NFT.',
+                title : 'Warning',
+                icon : 'warning',
+                buttons : {
+                    confirm : {text : "Got it"}
+                }
+            });
+
+
+            return ;
+        }
+        setSelectedNft({
+            ...nft,
+            cart_id
+        }) ;
+        handleOpenNftView() ;
     }
 
     React.useEffect(() => {
@@ -79,12 +105,11 @@ const Cart = () => {
                         </NFTDesc>
                         <ButtonDiv>
                             <button type='button'
-                                onClick={() => cancelCart(cart._id)}
+                                onClick={() => cancelCart(cart.id)}
                             >Remove From Cart</button>
-                            <button onClick={() => {
-                                setSelectedNft(aptos_asset_list[cart.nft_id]) ;
-                                handleOpenNftView() ;
-                            }}>View</button>
+                            <button onClick={() => 
+                              openViewNFTInfo(aptos_asset_list[cart.nft_id], cart.id)
+                            }>Purchase</button>
                         </ButtonDiv>
                     </NFTCard>
                 )) : <Loading type='oval' width={30} height={30} />
@@ -93,6 +118,7 @@ const Cart = () => {
                 open={openNftView}
                 handleClose={handleCloseNftView}
                 nftInfo={selectedNft}
+                cancelCart={cancelCart}
             />
         </CartMain>
     )

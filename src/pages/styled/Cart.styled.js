@@ -3,13 +3,21 @@ import tagStyled from 'styled-components';
 export const CartMain = tagStyled.div`
     display : flex;
     flex-wrap : wrap;
-    gap : 20px;
+    gap : 30px;
 
     width : fit-content;
     margin-top : 40px;
 `
 
 export const NFTCard = tagStyled.div`
+
+    :hover {
+        transform : translateY(-10px);
+    }
+
+    box-shadow : 1px 1px 4px 1px #6db1dd;
+    transition : 0.3s;
+
     width : 250px;
 
     display : flex;

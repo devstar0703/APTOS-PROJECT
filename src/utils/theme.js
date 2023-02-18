@@ -19,7 +19,7 @@ const spacing = 8;
 
 const theme = createTheme({
     layout: {
-        header : 120 ,
+        header : 80 ,
         footer : 40 ,
         breadcumb : 45,
         status : 50,

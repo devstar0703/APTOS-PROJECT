@@ -26,15 +26,14 @@ const SignUp = (props) => {
 
     const clickSignUp = async () => {
         try {
-            let res = await axios.post(`${backend_endpoint}auth/signUp`, {
+            await axios.post(`${backend_endpoint}auth/signUp`, {
                 email,
                 password,
                 confirm_password
+            }, {
+                'Access-Control-Allow-Origin' : '*',
             }) ;
 
-            console.log(res.data) ;
-
-            
             swal({
                 title : 'Success',
                 text: "Sign Up Successful",
@@ -89,6 +88,18 @@ const SignUp = (props) => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder='Enter your confirmation password'
                 />
+                <div style={{marginBottom : 10}} />
+                <Label>
+                    Go to <span style={{
+                        color: 'red', 
+                        cursor : 'pointer',
+                    }}
+                    onClick={() => {
+                        handleClose();
+                        // handleOpenSignUp();
+                    }}
+                    >Sign In</span>
+                </Label>
             </DialogContent>
             <DialogActions>
                 <StyledButton

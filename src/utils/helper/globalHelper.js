@@ -2,7 +2,10 @@ import { getCookie } from "./cookieHelper"
 
 export const authorization = () => {
     return {
-        headers: { Authorization: `Bearer ` + getCookie('token') }
+        headers: { 
+            Authorization: `Bearer ` + getCookie('token'),
+            'Access-Control-Allow-Origin' : '*'
+        }
     }
 }
 

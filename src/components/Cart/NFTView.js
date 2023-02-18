@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { useWalletData } from 'src/shared/hooks/useWalletData';
-
 import { Dialog, DialogContent } from '@mui/material';
 
 import {
@@ -15,8 +13,9 @@ import {
 import {
     StyledPaper,
     StyledTextField,
-    StyledButton
 } from 'src/shared/styled';
+
+import swal from 'sweetalert';
 
 import { ipfs_origin } from 'src/utils/static';
 import Checkout from 'src/shared/components/Checkout';
@@ -30,13 +29,9 @@ const NFTView = (props) => {
     const {
         handleClose,
         open,
-        nftInfo
+        nftInfo,
+        cancelCart
     } = props;
-
-    const {
-        isConnected
-    } = useWalletData() ;
-
     
     const {data: signer} = Wagmi.useSigner() ;
 
@@ -61,9 +56,31 @@ const NFTView = (props) => {
 
     const transferFrom = async () => {
         try {
-            await nftInstance.safeTransferFrom(nft_owner, buyer_address, nft_id) ;
+            let receipt = await nftInstance.safeTransferFrom(nft_owner, buyer_address, nft_id) ;
+            await receipt.wait() ;
+
+
+            await cancelCart(nftInfo.cart_id) ;
+
+            swal({
+                title : 'Success',
+                text : 'Transfer is successful',
+                buttons : {
+                    confirm : {text : 'Got it'}
+                },
+                icon : 'success'
+            });
+
+            handleClose();
         } catch(err) {
-            
+            swal({
+                title : 'Error',
+                text : 'Transfer is not successful',
+                buttons : {
+                    confirm : {text: 'Got it'}
+                },
+                icon : 'error'
+            })
         }
     }
 

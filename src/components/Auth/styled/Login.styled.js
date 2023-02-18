@@ -9,4 +9,5 @@ export const Label = tagStyled.p`
     width : 100%;
 
     padding-left : 10px;
+    padding-bottom : 5px;
 `

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useWalletData } from 'src/shared/hooks/useWalletData';
+import useWalletData  from 'src/shared/hooks/useWalletData';
 import { loadAllCartList } from 'src/redux/actions/cart';
 import { useDispatch } from 'react-redux';
 
@@ -64,21 +64,18 @@ const NFTInfo = (props) => {
     }
 
     const addToCart = async () => {
-        console.log(nft_id);
         try {
-            let res = await axios.post(`${backend_endpoint}cart/addToCart`, {
+            await axios.post(`${backend_endpoint}cart/addToCart`, {
                 nft_id
             }, authorization()) ;
-
-            console.log(res.data) ;
 
             swal({
                 title : 'Success',
                 text : `${nftInfo?.name} is added to cart`,
-                buttons : false,
-                timer : 1000,
-                icon: 'success'
-            })
+                buttons : {
+                    confirm : {text : "Got it"}
+                },
+                icon: 'success'            })
 
             loadAllCartList(dispatch);
         } catch(err) {

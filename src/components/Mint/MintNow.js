@@ -66,8 +66,6 @@ const MintNow = () => {
 
             await receipt.wait() ;
 
-            console.log(receipt);
-
             await getTotalSupply();
 
             setLoading(false);

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import {  useSelector } from 'react-redux';
+import useWalletData from 'src/shared/hooks/useWalletData';
 
 import Loading from 'react-loading-components';
 
@@ -28,8 +29,9 @@ import { StyledTextField } from 'src/shared/styled';
 import { SearchOutlined } from '@mui/icons-material';
 
 import aptos_asset_list from 'src/shared/data/aptos_asset_list.json';
-
 import { ipfs_origin } from 'src/utils/static';
+
+import swal from 'sweetalert';
 
 const NFTTable = (props) => {
     const headFields = [
@@ -38,6 +40,10 @@ const NFTTable = (props) => {
         "Description",
         "Status"
     ] ;
+
+    const {
+        isConnected
+    } = useWalletData() ;
 
     const classes = useStyles() ;
 
@@ -62,6 +68,27 @@ const NFTTable = (props) => {
     const handleOpenNFTInfo = () => { setOpenNFTInfo(true) }
     const handleCloseNFTInfo = () => { setOpenNFTInfo(false) }
 
+    const openViewNFTInfo = (nft) => {
+        if(!isConnected) {
+            swal({
+                text : 'You should connect wallet to get this NFT information',
+                title : 'Warning',
+                icon : 'warning',
+                buttons : {
+                    confirm : {text : "Got it"}
+                }
+            });
+
+
+            return ;
+        }
+        handleOpenNFTInfo();
+        setSelectedNFT({
+            ...nft,
+            assetUrl : `${ipfs_origin}/${nft.image.replaceAll('ipfs://','')}`
+        });
+
+    }
     return (
         <>
             <StyledTextField 
@@ -115,13 +142,9 @@ const NFTTable = (props) => {
                                             Pending On Cart...
                                         </TableCell>
                                         : <TableCell>
-                                            <button onClick={() => {
-                                                handleOpenNFTInfo();
-                                                setSelectedNFT({
-                                                    ...nft,
-                                                    assetUrl : `${ipfs_origin}/${nft.image.replaceAll('ipfs://','')}`
-                                                });
-                                            }}>View In Detail</button>
+                                            <button onClick={() => 
+                                                openViewNFTInfo(nft)
+                                            }>View In Detail</button>
                                         </TableCell>
                                     }
                                 </TableRow>

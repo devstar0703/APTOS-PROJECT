@@ -38,6 +38,8 @@ export const WalletProvider = ({ children, value }) => {
     )
 }
 
-export const useWalletData = () => {
+const useWalletData = () => {
     return React.useContext(WalletContext) ;
 }
+
+export default useWalletData;

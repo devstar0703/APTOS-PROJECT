@@ -2,13 +2,13 @@ import * as React from 'react' ;
 
 import useRouteData  from 'src/shared/hooks/useRouteData';
 import { useNavigate } from 'react-router-dom';
-import { useWalletData } from 'src/shared/hooks/useWalletData';
+// import useWalletData from 'src/shared/hooks/useWalletData';
 
 import { routeData } from 'src/utils/routeData';
 
 import { useTheme } from '@mui/styles';
 
-import LogoImg from 'src/assets/logo.webp';
+import LogoImg from 'src/assets/logo.png';
 
 import { 
     HeaderMain,
@@ -22,19 +22,25 @@ import {
 
 import Login from '../Auth/Login';
 
-import { AccountBalanceWalletOutlined } from '@mui/icons-material';
+// import { DropdownLink } from 'src/shared/ui';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-import WalletDrawer from './WalletDrawer';
+// import { AccountBalanceWalletOutlined } from '@mui/icons-material';
 
-import { eraseCookie, getCookie } from 'src/utils/helper/cookieHelper';
+// import WalletDrawer from './WalletDrawer';
+// import WalletPopover from './WalletPopover';
+
+import { eraseCookie } from 'src/utils/helper/cookieHelper';
+import { isAuthenticated } from 'src/utils/helper/globalHelper';
+
 
 const Header = () => {
     const navigate = useNavigate() ;
     const theme = useTheme() ;
 
-    const {
-        isConnected
-    } = useWalletData() ;
+    // const {
+    //     isConnected
+    // } = useWalletData() ;
 
     const {
         selectedRouteData,
@@ -66,7 +72,9 @@ const Header = () => {
     ]
 
     const [openLogin, setOpenLogin] = React.useState(false);
-    const [openWalletDrawer, setWalletDrawer] = React.useState(false);
+    // const [openWalletDrawer, setWalletDrawer] = React.useState(false);
+    // const [openWalletPopover , setWalletPopover ] = React.useState(false) ;
+    // const anchorRef = React.useRef(null) ;
 
     const clickNavItem = (navItem) => {
         onChangeRoute(navItem);
@@ -75,7 +83,8 @@ const Header = () => {
     const handleOpenLogin = () => { setOpenLogin(true) }
     const handleCloseLogin = () => { setOpenLogin(false) }
 
-    const handleWalletDrawer = () => { setWalletDrawer(!openWalletDrawer) }
+    // const handleWalletDrawer = () => { setWalletDrawer(!openWalletDrawer) }
+    // const handleWalletPopover = () => { setWalletPopover(!openWalletPopover) }
 
     return (
         <>
@@ -91,7 +100,7 @@ const Header = () => {
                                 {nav.navLabel}
                             </NavItem>
                         ))}
-                        { getCookie('token') && prvNavList.map((nav, index) => (
+                        { isAuthenticated() && prvNavList.map((nav, index) => (
                             <NavItem key={index} theme={theme} onClick={() => clickNavItem(nav)}
                                 className={nav.childrens.includes(selectedRouteData.key) ? 'active' : ''}
                                 to={nav.link}
@@ -100,7 +109,7 @@ const Header = () => {
                             </NavItem>
                         ))}
                         {
-                            isConnected && web3NavList.map((nav, index) => (
+                            isAuthenticated() && web3NavList.map((nav, index) => (
                                 <NavItem key={index} theme={theme} onClick={() => clickNavItem(nav)}
                                     className={nav.childrens.includes(selectedRouteData.key) ? 'active' : ''}
                                     to={nav.link}
@@ -114,7 +123,7 @@ const Header = () => {
                 {/* <ConnectButton /> */}
                 <ToolBar>
                     {
-                        !getCookie('token') ? <ToolItem
+                        !isAuthenticated() ? <ToolItem
                             onClick={() => handleOpenLogin()}
                         >
                             Sign In
@@ -127,11 +136,16 @@ const Header = () => {
                             Sign Out
                         </ToolItem>
                     }
-                    <ToolItem
-                        onClick={handleWalletDrawer}
-                    >
-                        <AccountBalanceWalletOutlined />
-                    </ToolItem>
+                    {
+                        // isAuthenticated() &&
+                        //  <DropdownLink
+                        //     // onClick={handleWalletDrawer}
+                        //     label={<AccountBalanceWalletOutlined />}
+                        // >
+                        //     <ConnectButton />
+                        // </DropdownLink>
+                        isAuthenticated() &&   <ConnectButton />
+                    }
                 </ToolBar>
 
                 <Login 
@@ -139,10 +153,15 @@ const Header = () => {
                     handleClose={handleCloseLogin}
                 /> 
             </HeaderMain>
-            <WalletDrawer 
+            {/* <WalletDrawer 
                 open={openWalletDrawer}
                 handleDrawer={handleWalletDrawer}
             />
+            <WalletPopover 
+                open={openWalletPopover}
+                handlePopOver={handleWalletPopover}
+                anchorEl={anchorRef ? anchorRef.current : null}
+            /> */}
         </>
     )
 }

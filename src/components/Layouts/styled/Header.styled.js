@@ -18,6 +18,8 @@ export const HeaderMain = tagStyled.div`
     gap : 10px;
 
     padding : 10px 2%;
+
+    background : black;
 `
 export const NavBar = tagStyled.div`
     display : flex;
@@ -33,7 +35,7 @@ export const ToolBar = tagStyled.div`
 
 export const LogoImage = tagStyled.img`
     border-radius : 10px;
-    width : 200px;
+    width : 150px;
 `
 
 export const NavList = tagStyled.div`
@@ -49,7 +51,7 @@ export const ToolItem = tagStyled.p`
     transition : 0.2s;
     margin : 0px;
     color : white;
-    font-size : 20px;
+    font-size : 17px;
     
     cursor: pointer;
 
@@ -66,21 +68,32 @@ export const ToolItem = tagStyled.p`
 export const NavItem = styled(Link)`
     text-decoration : none ;
     color : white;
-    font-size : 20px;
+    font-size : 17px;
     cursor : pointer;
 
     height : 100%;
-    width : 120px;
+    width : 100px;
 
     display : flex;
-    align-items :center;
+    align-items : flex-start;
     justify-content: center;
 
-    transition: 0.5s;
+    transition: 0.3s;
 
     &.active {
         color : red;
+
+        :after {
+            position : absolute;
+            bottom : -10px;
+            content : '';
+            width : 100% ;
+            height : 2px;
+            background : red;
+        }
     }
+
+    position : relative;
 
     :hover {
         color : red;

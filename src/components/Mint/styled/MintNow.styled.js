@@ -14,7 +14,8 @@ export const MintNowDiv = tagStyled.div`
     flex-direction : column;
     align-items : center;
 
-    max-width : 450px;
+    max-width : 500px;
+    width : 500px;
 `
 
 export const TitleDiv = tagStyled.p`
@@ -66,9 +67,9 @@ export const CounterDiv = tagStyled.div`
     margin-bottom : 30px;
 
     display : flex;
-    justify-content : space-between;
+    justify-content : space-around;
     align-items : center;
-    width : 300px;
+    width : 100%;
 `
 
 export const CounterButton = tagStyled.button`
@@ -79,6 +80,12 @@ export const CounterButton = tagStyled.button`
     cursor : pointer;
     width : 40px;
     height : 40px;
+
+    transition : 0.2s;
+
+    :hover {
+        color : red;
+    }
 `
 
 export const StyledP = tagStyled.p`

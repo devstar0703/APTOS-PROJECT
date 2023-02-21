@@ -48,6 +48,7 @@ const NFTTable = (props) => {
     const classes = useStyles() ;
 
     const allCartList = useSelector(state => state.cart.allCartList) ;
+    const allPurchasedList = useSelector(state => state.nft.allPurchasedList) ;
 
     const [search_id, setSearchId] = React.useState('');
     const [selectedNFT, setSelectedNFT] = React.useState({});
@@ -69,23 +70,10 @@ const NFTTable = (props) => {
     const handleCloseNFTInfo = () => { setOpenNFTInfo(false) }
 
     const openViewNFTInfo = (nft) => {
-        if(!isConnected) {
-            swal({
-                text : 'You should connect wallet to get this NFT information',
-                title : 'Warning',
-                icon : 'warning',
-                buttons : {
-                    confirm : {text : "Got it"}
-                }
-            });
-
-
-            return ;
-        }
         handleOpenNFTInfo();
         setSelectedNFT({
             ...nft,
-            assetUrl : `${ipfs_origin}/${nft.image.replaceAll('ipfs://','')}`
+            assetUrl : `${ipfs_origin}/${nft.asset}`
         });
 
     }
@@ -126,7 +114,7 @@ const NFTTable = (props) => {
                                     <TableCell
                                         sx={{width : '150px'}}
                                     >
-                                        <NFTAsset src={`${ipfs_origin}/${nft.image.replaceAll('ipfs://','')}`} />
+                                        <NFTAsset src={`${ipfs_origin}/${nft.asset}`} />
                                     </TableCell>
                                     <TableCell>
                                         {nft.name}
@@ -141,11 +129,17 @@ const NFTTable = (props) => {
                                         ? <TableCell>
                                             Pending On Cart...
                                         </TableCell>
-                                        : <TableCell>
-                                            <button onClick={() => 
-                                                openViewNFTInfo(nft)
-                                            }>View In Detail</button>
-                                        </TableCell>
+                                        : (
+                                            allPurchasedList?.findIndex(nft =>
+                                                nft.nft_id === index + page * rowsPerPage
+                                            ) >= 0 ? <TableCell>
+                                                Purchased
+                                            </TableCell> : <TableCell>
+                                                <button onClick={() => 
+                                                    openViewNFTInfo(nft)
+                                                }>View In Detail</button>
+                                            </TableCell>
+                                        )
                                     }
                                 </TableRow>
                             )) : <TableRow>

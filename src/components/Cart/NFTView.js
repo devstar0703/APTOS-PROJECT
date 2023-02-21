@@ -17,13 +17,15 @@ import {
 
 import swal from 'sweetalert';
 
-import { ipfs_origin } from 'src/utils/static';
+import { backend_endpoint, ipfs_origin } from 'src/utils/static';
 import Checkout from 'src/shared/components/Checkout';
 
 import * as Wagmi from "wagmi";
 
 import { nftAddr } from 'src/web3/addr';
 import nftAbi from 'src/web3/abi/nft.json' ;
+import axios from 'axios';
+import { authorization } from 'src/utils/helper/globalHelper';
 
 const NFTView = (props) => {
     const {
@@ -42,23 +44,23 @@ const NFTView = (props) => {
 	});
 
     const [buyer_address, setBuyerAddress] = React.useState('');
-    const [nft_id, setNFTId] = React.useState(0) ;
     const [nft_owner, setNFTOwner] = React.useState(null) ;
 
     const getOwnerOf = async () => {
         try {
-            let owner = await nftInstance.ownerOf(nft_id) ;
+            let owner = await nftInstance.ownerOf(nftInfo.id) ;
             setNFTOwner(owner);
         } catch(err) {
             setNFTOwner(null);
         }
     }
 
-    const transferFrom = async () => {
-        try {
-            let receipt = await nftInstance.safeTransferFrom(nft_owner, buyer_address, nft_id) ;
-            await receipt.wait() ;
+    const nftTransferFrom = async () => {
+        console.log(nftInstance) ;
 
+        try {
+            let receipt = await nftInstance.safeTransferFrom(nft_owner, buyer_address, nftInfo.id) ;
+            await receipt.wait() ;
 
             await cancelCart(nftInfo.cart_id) ;
 
@@ -71,8 +73,8 @@ const NFTView = (props) => {
                 icon : 'success'
             });
 
-            handleClose();
         } catch(err) {
+            console.log(err);
             swal({
                 title : 'Error',
                 text : 'Transfer is not successful',
@@ -82,19 +84,39 @@ const NFTView = (props) => {
                 icon : 'error'
             })
         }
+
+        handleClose();
     }
 
-    React.useEffect(() => {
-        if(nftInfo?.name) {
-            let nft_id = nftInfo.name.slice(nftInfo.name.search('#') + 1, nftInfo.name.length) ;
-            setNFTId(parseInt(nft_id));
-        }
-    }, [nftInfo]) ;
+    const purchaseAsset = async () => {
+        try {
+            let res = await axios.post(`${backend_endpoint}nft/purchaseAsset`, {
+                nft_id : nftInfo.id,
+            }, authorization());
 
+            cancelCart(nftInfo.cart_id);
+            
+            swal({
+                title : 'Success',
+                text : `${nftInfo?.name} is purchased`,
+                buttons : {
+                    confirm : {text : "Got it"}
+                },
+                icon: 'success'            
+            })
+
+            console.log(res.data) ;
+
+        } catch(err) {
+
+        }
+
+        handleClose() ;
+    }
     React.useEffect(() => {
-        getOwnerOf();
+        if(nftInfo) getOwnerOf();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [nft_id]) ;
+    }, [nftInfo]) ;
 
     return (
         <Dialog
@@ -105,22 +127,17 @@ const NFTView = (props) => {
         >
             <DialogContent>
                 <NFTViewMain>
-                    <NFTImage src={`${ipfs_origin}/${nftInfo?.image?.replaceAll('ipfs://','')}`} />
-                    <NFTOwner>Owner : {nft_owner || 'This is not minted yet.'}</NFTOwner>
+                    <NFTImage src={`${ipfs_origin}/${nftInfo?.asset}`} />
+                    {/* <NFTOwner>Owner : {nft_owner || 'This is not minted yet.'}</NFTOwner> */}
                     <NFTName> Name : {nftInfo?.name}</NFTName>
                     <NFTDesc>Description : {nftInfo?.description}</NFTDesc>
                 </NFTViewMain>
                 <div style={{marginTop : 10}} />
-                <StyledTextField
-                    placeholder='Enter Buyer Address'
-                    fullWidth
-                    value={buyer_address}
-                    onChange={(e) => setBuyerAddress(e.target.value)}
-                />
                 { nft_owner && <Checkout 
-                    payEvent={transferFrom}
+                    payEvent={purchaseAsset}
                 /> }
                 <div style={{marginTop : 20}} />
+                <button onClick={purchaseAsset}>purchase</button>
             </DialogContent>
         </Dialog>
         

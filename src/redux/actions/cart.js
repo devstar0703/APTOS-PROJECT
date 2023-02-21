@@ -17,3 +17,15 @@ export const loadAllCartList = async (dispatch) => {
         }
     });
 }
+
+
+export const loadCartList = async (dispatch) => {
+    let res = await axios.get(`${backend_endpoint}cart/cartList`, authorization()) ;
+
+    dispatch({
+        type : ActionTypes.GetCartList,
+        payload : {
+            cartList : res.data.cartList
+        }
+    }) ;
+}

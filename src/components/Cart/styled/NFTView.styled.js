@@ -1,12 +1,5 @@
 import tagStyled from 'styled-components';
 
-import {
-    Paper, styled,
-    TextField,
-    Button
-} from '@mui/material';
-
-
 export const NFTViewMain = tagStyled.div`
     width : 100%;
 

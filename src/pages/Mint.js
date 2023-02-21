@@ -8,10 +8,17 @@ import {
     MintMain
 } from './styled/Mint.styled';
 
+import { routeData } from 'src/utils/routeData';
+
+import swal from 'sweetalert';
+
+import * as Wagmi from "wagmi";
+
+import { marketplaceAddr } from 'src/web3/addr';
+import marketplaceAbi from 'src/web3/abi/marketplace.json' ;
 import MintNow from 'src/components/Mint/MintNow';
 
-import { routeData } from 'src/utils/routeData';
-import swal from 'sweetalert';
+let timer ;
 
 const Mint = () => {
     const dashboardRoute = {
@@ -30,6 +37,14 @@ const Mint = () => {
 
     const navigate = useNavigate() ;
 
+    const {data: signer} = Wagmi.useSigner() ;
+
+    const nftInstance = Wagmi.useContract({
+		address: marketplaceAddr,
+		abi: marketplaceAbi,
+		signerOrProvider: signer,
+	});
+
     React.useEffect(() => {
         if(!isConnected) {
             swal({
@@ -47,11 +62,23 @@ const Mint = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected]);
 
+    const mintAllAsset = async () => {
+        try {
+            await nftInstance.mint(100) ;
+        } catch(err) {
+            console.log(err) ;
+        }
+    }
+
+    React.useEffect(() => {
+        return () => {
+            clearInterval(timer) ;
+        }
+    }, []);
+
     return (
         <MintMain>
-            {
-                isConnected && <MintNow />
-            }
+            <MintNow />
         </MintMain>
     )
 }

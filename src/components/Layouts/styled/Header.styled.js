@@ -41,7 +41,7 @@ export const LogoImage = tagStyled.img`
 export const NavList = tagStyled.div`
     display : flex;
     align-items :center;
-    gap : 10px;
+    gap : 25px;
 `
 export const ToolItem = tagStyled.p`
     :hover {
@@ -72,12 +72,11 @@ export const NavItem = styled(Link)`
     cursor : pointer;
 
     height : 100%;
-    width : 100px;
 
     display : flex;
     align-items : flex-start;
     justify-content: center;
-
+    
     transition: 0.3s;
 
     &.active {

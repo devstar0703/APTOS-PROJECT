@@ -13,6 +13,7 @@ import Content from "src/components/Layouts/Content";
 import Dashboard from "./Dashboard";
 import Cart from "./Cart";
 import Mint from "./Mint";
+import Purchased from "./Purchased";
 
 import { 
     BackdropOverlay,
@@ -51,6 +52,7 @@ const Layout = (props) => {
                                     <Route path="/dashboard" element={< Dashboard />} />
                                     <Route path="/cart" element={< Cart />} />
                                     <Route path="/mint" element={<Mint />} />
+                                    <Route path="/purchased" element={<Purchased />} />
                                 </Routes>
                             </Content>
                             {/* <Footer /> */}

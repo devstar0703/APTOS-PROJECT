@@ -30,6 +30,8 @@ import nftAbi from 'src/web3/abi/nft.json' ;
 import axios from 'axios';
 import { authorization, isAuthenticated } from 'src/utils/helper/globalHelper';
 
+import Loading from 'react-loading-components';
+
 const NFTInfo = (props) => {
     const {
         handleClose,
@@ -51,12 +53,12 @@ const NFTInfo = (props) => {
 		signerOrProvider: signer,
 	});
 
-    const [nft_id, setNFTId] = React.useState(0) ;
     const [nft_owner, setNFTOwner] = React.useState(null) ;
+    const [loading, setLoading] = React.useState(null) ;
 
     const getOwnerOf = async () => {
         try {
-            let owner = await nftInstance.ownerOf(nft_id) ;
+            let owner = await nftInstance.ownerOf(nftInfo.id) ;
             setNFTOwner(owner);
         } catch(err) {
             setNFTOwner(null);
@@ -64,9 +66,10 @@ const NFTInfo = (props) => {
     }
 
     const addToCart = async () => {
+        setLoading(true) ;
         try {
             await axios.post(`${backend_endpoint}cart/addToCart`, {
-                nft_id
+                nft_id : nftInfo.id
             }, authorization()) ;
 
             swal({
@@ -75,27 +78,23 @@ const NFTInfo = (props) => {
                 buttons : {
                     confirm : {text : "Got it"}
                 },
-                icon: 'success'            })
+                icon: 'success'            
+            })
 
             loadAllCartList(dispatch);
         } catch(err) {
 
         }
 
+        setLoading(false) ;
+        
         handleClose() ;
     }
 
     React.useEffect(() => {
-        if(nftInfo?.name) {
-            let nft_id = nftInfo.name.slice(nftInfo.name.search('#') + 1, nftInfo.name.length) ;
-            setNFTId(parseInt(nft_id)-1);
-        }
-    }, [nftInfo]) ;
-
-    React.useEffect(() => {
         getOwnerOf();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [nft_id, signer]) ;
+    }, [nftInfo, signer]) ;
 
     return (
         <Dialog
@@ -106,16 +105,16 @@ const NFTInfo = (props) => {
         >
             <DialogContent>
                 <NFTInfoMain>
-                    <NFTImage src={`${ipfs_origin}/${nftInfo?.image?.replaceAll('ipfs://','')}`} />
-                    <NFTOwner>Owner : {nft_owner || 'This is not minted yet.'}</NFTOwner>
+                    <NFTImage src={`${ipfs_origin}/${nftInfo?.asset}`} />
+                    {/* <NFTOwner>Owner : {nft_owner || 'This is not minted yet.'}</NFTOwner> */}
                     <NFTName> Name : {nftInfo?.name}</NFTName>
                     <NFTDesc>Description : {nftInfo?.description}</NFTDesc>
                 </NFTInfoMain>
                 <div style={{marginTop: 20}} />
                 <StyledButton fullWidth
-                    disabled={!isConnected || !nft_owner || !isAuthenticated()}
+                    disabled={!isAuthenticated() || loading}
                     onClick={() => addToCart()}
-                >Add to Cart</StyledButton>
+                >{loading && <Loading type='oval' width={20} height={20} fill="white" />} &nbsp; Add to Cart</StyledButton>
             </DialogContent>
         </Dialog>
         

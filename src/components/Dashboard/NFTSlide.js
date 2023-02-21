@@ -15,8 +15,8 @@ import aptos_asset_list from 'src/shared/data/aptos_asset_list.json' ;
 
 import * as Wagmi from "wagmi";
 
-import { nftAddr } from 'src/web3/addr';
-import nftAbi from 'src/web3/abi/nft.json' ;
+import { marketplaceAddr } from 'src/web3/addr';
+import marketplaceAbi from 'src/web3/abi/marketplace.json' ;
 
 const NFTSlide = () => {
     const [totalSupply, setTotalSupply] = React.useState(0) ;
@@ -24,8 +24,8 @@ const NFTSlide = () => {
     const {data: signer} = Wagmi.useSigner() ;
 
     const nftInstance = Wagmi.useContract({
-		address: nftAddr,
-		abi: nftAbi,
+		address: marketplaceAddr,
+		abi: marketplaceAbi,
 		signerOrProvider: signer,
 	});
 
@@ -85,7 +85,7 @@ const NFTSlide = () => {
                             <SwiperSlide key={index}
                             >
                                 <NFTItem 
-                                    style={{backgroundImage : `url(${`${ipfs_origin}/${nft.image.replaceAll('ipfs://','')}`})`}}
+                                    style={{backgroundImage : `url(${`${ipfs_origin}/${nft.asset}`})`}}
                                     className='image'
                                 />
                                 <NFTName>

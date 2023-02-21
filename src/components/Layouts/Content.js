@@ -9,6 +9,7 @@ import {
 import { useDispatch } from 'react-redux';
 
 import { loadAllCartList } from 'src/redux/actions/cart';
+import { loadAllPurchasedList } from 'src/redux/actions/nft';
 
 const Content = ({children}) => {
     const theme = useTheme() ;
@@ -17,6 +18,8 @@ const Content = ({children}) => {
 
     React.useEffect(() => {
         loadAllCartList(dispatch);
+        loadAllPurchasedList(dispatch) ;
+        // loadAllPurchasedList(dispatch);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []) ;
     

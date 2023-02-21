@@ -33,11 +33,24 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { eraseCookie } from 'src/utils/helper/cookieHelper';
 import { isAuthenticated } from 'src/utils/helper/globalHelper';
 
+import * as Wagmi from "wagmi";
+
+import { marketplaceAddr } from 'src/web3/addr';
+import marketplaceAbi from 'src/web3/abi/marketplace.json' ;
 
 const Header = () => {
     const navigate = useNavigate() ;
     const theme = useTheme() ;
 
+    const {data: signer} = Wagmi.useSigner() ;
+
+    const nftInstance = Wagmi.useContract({
+		address: marketplaceAddr,
+		abi: marketplaceAbi,
+		signerOrProvider: signer,
+	});
+
+    const [userIsAdmin, setUserIsAdmin] = React.useState(false) ;
     // const {
     //     isConnected
     // } = useWalletData() ;
@@ -60,6 +73,11 @@ const Header = () => {
             ...routeData.cart,
             childrens : [routeData.cart.key],
             navLabel : routeData.cart.label
+        },
+        {
+            ...routeData.purchased,
+            childrens : [routeData.purchased.key],
+            navLabel : routeData.purchased.label
         }
     ]
 
@@ -83,8 +101,25 @@ const Header = () => {
     const handleOpenLogin = () => { setOpenLogin(true) }
     const handleCloseLogin = () => { setOpenLogin(false) }
 
+    const callIsAdmin = async () => {
+        try {
+            let _isAdmin = await nftInstance.isAdmin() ;
+
+            setUserIsAdmin(_isAdmin) ;
+        } catch(err) {
+            console.log(err) ;
+        }
+    }
     // const handleWalletDrawer = () => { setWalletDrawer(!openWalletDrawer) }
     // const handleWalletPopover = () => { setWalletPopover(!openWalletPopover) }
+
+    React.useEffect(() => {
+        if(signer) callIsAdmin() ;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [signer]) ;
+    React.useEffect(() => {
+        console.log(userIsAdmin) ;
+    }, [userIsAdmin]) ;
 
     return (
         <>
@@ -109,7 +144,7 @@ const Header = () => {
                             </NavItem>
                         ))}
                         {
-                            isAuthenticated() && web3NavList.map((nav, index) => (
+                            userIsAdmin && isAuthenticated() && web3NavList.map((nav, index) => (
                                 <NavItem key={index} theme={theme} onClick={() => clickNavItem(nav)}
                                     className={nav.childrens.includes(selectedRouteData.key) ? 'active' : ''}
                                     to={nav.link}

@@ -22,6 +22,8 @@ import swal from 'sweetalert';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
+import Loading from 'react-loading-components' ;
+
 const Login = (props) => {
     const {
         open,
@@ -34,12 +36,13 @@ const Login = (props) => {
     const [password, setUserPassword] = React.useState('');
 
     const [openSignUp, setOpenSignUp] = React.useState(false);
-
+    const [loading, setLoading] = React.useState(false) ;
     
     const handleOpenSignUp = () => { setOpenSignUp(true) }
     const handleCloseSignUp = () => { setOpenSignUp(false) }
 
     const clickSignIn = async () => {
+        setLoading(true) ;
         try {
             let res = await axios.post(`${backend_endpoint}auth/signin`, {
                 email,
@@ -72,7 +75,16 @@ const Login = (props) => {
                 icon : 'error'
             })
         }
+
+        initializeForm() ;
+        setLoading(false) ;
     }
+
+    const initializeForm = () => {
+        setPasswordVisible(true);
+        setUserEmail('');
+        setUserPassword('')
+    };
 
     return (
         <>
@@ -130,10 +142,10 @@ const Login = (props) => {
                 </DialogContent>
                 <DialogActions>
                     <StyledButton
-                        disabled={!validatorEmail(email) || !validatorPassword(password)}
+                        disabled={!validatorEmail(email) || !validatorPassword(password) || loading}
                         onClick={() => clickSignIn()}
                     >
-                        Login
+                        { loading && <Loading type='oval' width={20} height={20} fill="white"/>} &nbsp; Login
                     </StyledButton>
                 </DialogActions>
             </Dialog>

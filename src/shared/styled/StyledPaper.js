@@ -4,7 +4,10 @@ import {
 
 export default styled(Paper)`
     background-color : black ;
+    border-radius : 20px;
     border : 1px solid gray;
+    
+    width : 400px;
 
     & .MuiDialogContent-root {
         position : relative;

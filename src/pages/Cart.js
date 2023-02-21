@@ -23,7 +23,7 @@ import { authorization } from 'src/utils/helper/globalHelper';
 import ActionTypes from 'src/redux/actions/actionTypes';
 
 import aptos_asset_list from 'src/shared/data/aptos_asset_list.json';
-import { loadAllCartList } from 'src/redux/actions/cart';
+import { loadAllCartList, loadCartList } from 'src/redux/actions/cart';
 
 const Cart = () => {
     const {
@@ -39,16 +39,6 @@ const Cart = () => {
     const handleCloseNftView = () => { setOpenNftView(false) }
     const handleOpenNftView = () => { setOpenNftView(true) }
 
-    const loadCartList = async () => {
-        let res = await axios.get(`${backend_endpoint}cart/cartList`, authorization()) ;
-
-        dispatch({
-            type : ActionTypes.GetCartList,
-            payload : {
-                cartList : res.data.cartList
-            }
-        }) ;
-    }
 
     const cancelCart = async (cart_id) => {
         await axios.delete(`${backend_endpoint}cart`, {
@@ -60,24 +50,11 @@ const Cart = () => {
             'Access-Control-Allow-Origin' : '*',
         }) ;
 
-        loadCartList() ;
+        loadCartList(dispatch) ;
         loadAllCartList(dispatch) ;
     }
 
     const openViewNFTInfo = (nft, cart_id) => {
-        if(!isConnected) {
-            swal({
-                text : 'You should connect wallet to purchase this NFT.',
-                title : 'Warning',
-                icon : 'warning',
-                buttons : {
-                    confirm : {text : "Got it"}
-                }
-            });
-
-
-            return ;
-        }
         setSelectedNft({
             ...nft,
             cart_id
@@ -86,7 +63,7 @@ const Cart = () => {
     }
 
     React.useEffect(() => {
-        loadCartList() ;
+        loadCartList(dispatch) ;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []) ;
 
@@ -96,7 +73,7 @@ const Cart = () => {
                 cartList ? cartList
                 .map((cart, index) => (
                     <NFTCard key={index} >
-                        <NFTAsset src={`${ipfs_origin}/${aptos_asset_list[cart.nft_id].image.replaceAll('ipfs://','')}`}/>
+                        <NFTAsset src={`${ipfs_origin}/${aptos_asset_list[cart.nft_id].asset}`}/>
                         <NFTName >
                             {aptos_asset_list[cart.nft_id].name}
                         </NFTName>

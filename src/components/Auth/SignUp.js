@@ -9,6 +9,9 @@ import { StyledButton, StyledPaper, StyledTextField } from 'src/shared/styled';
 import {
     Label
 } from './styled/Login.styled';
+
+import Loading from 'react-loading-components';
+
 import { validatorEmail, validatorPassword } from 'src/utils/helper/validateHelper';
 import axios from 'axios';
 import { backend_endpoint } from 'src/utils/static';
@@ -20,11 +23,13 @@ const SignUp = (props) => {
         handleClose
     } = props ;
 
+    const [loading, setLoading] = React.useState(false) ;
     const [email, setUserEmail] = React.useState('');
     const [password, setUserPassword] = React.useState('');
     const [confirm_password, setConfirmPassword] = React.useState('');
 
     const clickSignUp = async () => {
+        setLoading(true) ;
         try {
             await axios.post(`${backend_endpoint}auth/signUp`, {
                 email,
@@ -42,11 +47,21 @@ const SignUp = (props) => {
                 icon : 'success'
             })
         } catch(err) {
-
+            console.log(err) ;
         }
 
+        initializeForm() ;
         handleClose();
+
+        setLoading(false) ;
     }
+
+    const initializeForm = () => {
+        setConfirmPassword('');
+        setUserPassword('');
+        setUserEmail('') ;
+    }
+    
     return (
         <Dialog
             open={open}
@@ -107,10 +122,11 @@ const SignUp = (props) => {
                         confirm_password !== password
                         || !validatorPassword(password) || !validatorPassword(confirm_password)
                         || !validatorEmail(email)
+                        || loading
                     }
                     onClick={() => clickSignUp()}
                 >
-                    Sign Up
+                    { loading && <Loading type='oval' width={20} height={20} fill='white'/> } &nbsp; Sign Up
                 </StyledButton>
             </DialogActions>
         </Dialog>

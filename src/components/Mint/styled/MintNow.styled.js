@@ -14,8 +14,7 @@ export const MintNowDiv = tagStyled.div`
     flex-direction : column;
     align-items : center;
 
-    max-width : 500px;
-    width : 500px;
+    max-width : 450px;
 `
 
 export const TitleDiv = tagStyled.p`
@@ -60,36 +59,4 @@ export const CircularDiv = tagStyled.div`
 
     margin-top : 40px;
     margin-bottom : 20px;
-`
-
-export const CounterDiv = tagStyled.div`
-    margin-top : 40px;
-    margin-bottom : 30px;
-
-    display : flex;
-    justify-content : space-around;
-    align-items : center;
-    width : 100%;
-`
-
-export const CounterButton = tagStyled.button`
-    background-color : black;
-    color : white;
-    font-size : 20px;
-    font-weight : bold;
-    cursor : pointer;
-    width : 40px;
-    height : 40px;
-
-    transition : 0.2s;
-
-    :hover {
-        color : red;
-    }
-`
-
-export const StyledP = tagStyled.p`
-    font-size : 20px;
-    color: white;
-    font-weight : bold ;
 `

@@ -20,7 +20,7 @@ import swal from 'sweetalert';
 import aptos_asset_list from 'src/shared/data/aptos_asset_list.json';
 import { ipfs_origin } from 'src/utils/static';
 
-import { loadPurchasetList } from 'src/redux/actions/nft';
+import { loadPurchasedList } from 'src/redux/actions/nft';
 
 const Purchased = () => {
     const {
@@ -55,7 +55,7 @@ const Purchased = () => {
     }
 
     React.useEffect(() => {
-        loadPurchasetList(dispatch) ;
+        loadPurchasedList(dispatch) ;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []) ;
 

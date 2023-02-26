@@ -33,7 +33,7 @@ import nftAbi from 'src/web3/abi/nft.json' ;
 import axios from 'axios';
 import { authorization } from 'src/utils/helper/globalHelper';
 import { withdraw } from 'src/web3/markeplace';
-import { loadPurchasetList } from 'src/redux/actions/nft';
+import { loadPurchasedList } from 'src/redux/actions/nft';
 
 const NFTView = (props) => {
     const {
@@ -83,7 +83,7 @@ const NFTView = (props) => {
 
                 console.log(res.data) ;
 
-                loadPurchasetList(dispatch);
+                loadPurchasedList(dispatch);
                 
                 swal({
                     title : 'Success',

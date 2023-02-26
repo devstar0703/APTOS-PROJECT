@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useDispatch } from 'react-redux';
+
 import { Dialog, DialogContent } from '@mui/material';
 
 import {
@@ -26,6 +28,8 @@ import { nftAddr } from 'src/web3/addr';
 import nftAbi from 'src/web3/abi/nft.json' ;
 import axios from 'axios';
 import { authorization } from 'src/utils/helper/globalHelper';
+import { loadAllCartList, loadCartList } from 'src/redux/actions/cart';
+import { loadAllPurchasedList, loadPurchasedList } from 'src/redux/actions/nft';
 
 const NFTView = (props) => {
     const {
@@ -43,6 +47,8 @@ const NFTView = (props) => {
 		signerOrProvider: signer,
 	});
 
+    const dispatch = useDispatch() ;
+
     const [buyer_address, setBuyerAddress] = React.useState('');
     const [nft_owner, setNFTOwner] = React.useState(null) ;
 
@@ -55,47 +61,16 @@ const NFTView = (props) => {
         }
     }
 
-    const nftTransferFrom = async () => {
-        console.log(nftInstance) ;
-
-        try {
-            let receipt = await nftInstance.safeTransferFrom(nft_owner, buyer_address, nftInfo.id) ;
-            await receipt.wait() ;
-
-            await cancelCart(nftInfo.cart_id) ;
-
-            swal({
-                title : 'Success',
-                text : 'Transfer is successful',
-                buttons : {
-                    confirm : {text : 'Got it'}
-                },
-                icon : 'success'
-            });
-
-        } catch(err) {
-            console.log(err);
-            swal({
-                title : 'Error',
-                text : 'Transfer is not successful',
-                buttons : {
-                    confirm : {text: 'Got it'}
-                },
-                icon : 'error'
-            })
-        }
-
-        handleClose();
-    }
-
     const purchaseAsset = async () => {
         try {
             let res = await axios.post(`${backend_endpoint}nft/purchaseAsset`, {
                 nft_id : nftInfo.id,
             }, authorization());
 
-            cancelCart(nftInfo.cart_id);
+            await cancelCart(nftInfo.cart_id);
             
+            loadCartList(dispatch) ;
+
             swal({
                 title : 'Success',
                 text : `${nftInfo?.name} is purchased`,
@@ -133,11 +108,10 @@ const NFTView = (props) => {
                     <NFTDesc>Description : {nftInfo?.description}</NFTDesc>
                 </NFTViewMain>
                 <div style={{marginTop : 10}} />
-                { nft_owner && <Checkout 
+                { <Checkout 
                     payEvent={purchaseAsset}
                 /> }
                 <div style={{marginTop : 20}} />
-                <button onClick={purchaseAsset}>purchase</button>
             </DialogContent>
         </Dialog>
         

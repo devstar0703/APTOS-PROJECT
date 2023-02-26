@@ -15,7 +15,7 @@ export const loadAllPurchasedList = async (dispatch) => {
         }
     });
 }
-export const loadPurchasetList = async (dispatch) => {
+export const loadPurchasedList = async (dispatch) => {
     let res = await axios.get(`${backend_endpoint}nft/purchasedList`, authorization()) ;
 
     console.log(res.data) ;
